@@ -26,5 +26,10 @@ class Robot:
 
     def is_goal(self):
         return len(self.path) <= 0
+    
+    def get_target_distance(self):
+        if self.target is None:
+            return None
+        return len(self.path)
 
     

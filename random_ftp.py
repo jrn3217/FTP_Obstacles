@@ -1,10 +1,8 @@
 import a_star
 from robot import Robot
-import metrics
-import board
 import random
 
-def freeze_tag_greedy_static(board, robots_positions):
+def freeze_tag_random(board, robots_positions):
 
 
     awake = []
@@ -26,7 +24,7 @@ def freeze_tag_greedy_static(board, robots_positions):
     while len(asleep) > 0:
 
         # Assign a new target if a robot does not have one:
-        # - use a* to find the closest target in the not_targeted list
+        # - use a* to find a random target in the not_targeted list
         # --- remove the target from the not_targeted list
         # -- if the not_targeted list is empty, use the asleep list
         # --- do not remove the target from the asleep list
@@ -37,7 +35,10 @@ def freeze_tag_greedy_static(board, robots_positions):
             if r.target is None:
                 possible_targets = list(not_targeted.keys()) if len(not_targeted) > 0 else list(asleep.keys())
                 random_target = [random.choice(possible_targets)]
-                path = a_star.astar_search(board, r.get_position(), random_target, 1)[0]
+                paths = a_star.astar_search(board, r.get_position(), random_target, 1)
+                if len(paths) <= 0:
+                        raise Exception("No path found")
+                path = paths[0]
                 target = asleep[path[-1]]
                 if len(not_targeted) > 0: 
                     not_targeted.pop(path[-1])
@@ -76,34 +77,3 @@ def freeze_tag_greedy_static(board, robots_positions):
 
 
     return total_steps, final_paths
-
-    
-        
-
-
-    
-### Testing functionality
-def main():
-
-
-
-    robots1 = ((0,9),(0,0), (9, 0), (9, 9), (3,2), (3, 7), (6, 2), (6, 7))
-
-    robots2 = [(0,0),(0,4),(2,2), (4,4)]
-
-    # maze_bots = [(9, 10),(1,1), (17,18), (3, 15), (17, 1)]
-
-    result, time = metrics.runtime_eval(freeze_tag_greedy_static, [board.board2, robots2])
-    total_steps, paths = result
-
-
-
-    print(f"RUNTIME: {time}")
-    print(f"TOTAL STEPS: {total_steps}")
-    
-    print("PATHS:")
-    for path in paths:
-        print(path)
-
-if __name__ == "__main__":
-    main()

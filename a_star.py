@@ -14,6 +14,9 @@ class Node:
     def __lt__(self, other):
         return self.g + self.h < other.g + other.h
 
+    def __repr__(self):
+        return f"{self.position}, g={self.g}, h={self.h}, f={self.g + self.h}"
+
 # Manhattan Distance
 def dist_l1(current, goal):
     return abs(current[0] - goal[0]) + abs(current[1] - goal[1])
@@ -52,7 +55,7 @@ def astar_search(grid, start, end_points, target_point_count):
                 return paths
             
             for node in open_list:  # update heuristic values
-                node.h = min([dist_l1(neighbor_node.position, end) for end in end_points])
+                node.h = min([dist_l1(node.position, end) for end in end_points])
 
             continue
         
@@ -84,35 +87,3 @@ def astar_search(grid, start, end_points, target_point_count):
             heapq.heappush(open_list, neighbor_node) # Add the neighbor to the open list
     
     return paths
-
-
-def main():
-    # Example grid
-    grid =  [[0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0,0],
-            [0,1,1,1,0,0,1,1,1,0],
-            [0,1,0,0,0,0,0,0,1,0],
-            [0,0,0,0,1,1,0,0,0,0],
-            [0,0,0,0,1,1,0,0,0,0],
-            [0,1,0,0,0,0,0,0,1,0],
-            [0,1,1,1,0,0,1,1,1,0],
-            [0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0,0]]
-
-    # Define start and end points
-    awake_robot = (0, 9)
-    asleep_robots = [(3,7), (9,9)]
-
-    # Run A* search
-    paths = astar_search(grid, awake_robot, asleep_robots, 1)
-
-    # Display result
-    if paths:
-        print(f"{len(paths)} Paths found:")
-        for p in paths:
-            print(p)
-    else:
-        print("No path found.")
-
-if __name__ == "__main__":
-    main()

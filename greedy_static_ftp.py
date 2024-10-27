@@ -1,7 +1,5 @@
 import a_star
 from robot import Robot
-import metrics
-import board
 
 def freeze_tag_greedy_static(board, robots_positions):
 
@@ -35,7 +33,10 @@ def freeze_tag_greedy_static(board, robots_positions):
         for r in awake:
             if r.target is None:
                 possible_targets = list(not_targeted.keys()) if len(not_targeted) > 0 else list(asleep.keys())
-                path = a_star.astar_search(board, r.get_position(), possible_targets, 1)[0]
+                paths = a_star.astar_search(board, r.get_position(), possible_targets, 1)
+                if len(paths) <= 0:
+                        raise Exception("No path found")
+                path = paths[0]
                 target = asleep[path[-1]]
                 if len(not_targeted) > 0: 
                     not_targeted.pop(path[-1])
@@ -74,36 +75,4 @@ def freeze_tag_greedy_static(board, robots_positions):
 
 
     return total_steps, final_paths
-
-    
-        
-
-
-    
-### Testing functionality
-def main():
-
-
-
-    robots1 = ((0,9),(0,0), (9, 0), (9, 9), (3,2), (3, 7), (6, 2), (6, 7))
-
-    robots2 = [(0,0),(0,4),(2,2), (4,4)]
-
-    # maze_bots = [(9, 10),(1,1), (17,18), (3, 15), (17, 1)]
-
-
-    result, time = metrics.runtime_eval(freeze_tag_greedy_static, [board.board1, robots1])
-    total_steps, paths = result
-
-
-
-    print(f"RUNTIME: {time}")
-    print(f"TOTAL STEPS: {total_steps}")
-    
-    print("PATHS:")
-    for path in paths:
-        print(path)
-
-if __name__ == "__main__":
-    main()
 

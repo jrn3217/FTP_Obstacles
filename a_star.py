@@ -45,9 +45,11 @@ def astar_search(grid, start, end_points, target_point_count):
             path = []
             end_points.remove(current_node.position)  # remove target from end points
 
-            while current_node:
-                path.append(current_node.position)
-                current_node = current_node.parent
+
+            curr = current_node
+            while curr:
+                path.append(curr.position)
+                curr = curr.parent
             
             paths.append(path[::-1])    # add to list of paths
 
@@ -57,7 +59,6 @@ def astar_search(grid, start, end_points, target_point_count):
             for node in open_list:  # update heuristic values
                 node.h = min([dist_l1(node.position, end) for end in end_points])
 
-            continue
         
         neighbors = [(0, -1), (0, 1), (-1, 0), (1, 0)] # Generate valid neighbors
         
@@ -81,7 +82,7 @@ def astar_search(grid, start, end_points, target_point_count):
             neighbor_node.h = min([dist_l1(neighbor_node.position, end) for end in end_points])
 
             # Check if this path is worse than any existing paths in the open list
-            if any(open_node for open_node in open_list if neighbor_node == open_node and neighbor_node.g > open_node.g):
+            if any(open_node for open_node in open_list if neighbor_node == open_node and neighbor_node.g >= open_node.g):
                 continue
             
             heapq.heappush(open_list, neighbor_node) # Add the neighbor to the open list

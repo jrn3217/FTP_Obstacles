@@ -119,7 +119,10 @@ def density(board):
             if cell == 1: wall_cells += 1
     return wall_cells / cells
 
-def randomize_robots(board, robot_count):
+def randomize_robots(board, robot_count, seed=None):
+    if seed is not None:
+        random.seed(seed)
+        
     empty_cells = []
     robots = []
 
